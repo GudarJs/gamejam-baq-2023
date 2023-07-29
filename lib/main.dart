@@ -34,7 +34,7 @@ void main() {
   class GameJam2023 extends FlameGame with HasCollisionDetection {
 
   Lya lya = Lya();
-  double gravity = 9.8;
+  double gravity = 100;
   double pushSpeed = 18;
   Vector2 velocity = Vector2(0, 0);
 
@@ -110,7 +110,6 @@ void main() {
       ..size = lyaSize
       ..position = Vector2(100, mapHeight! - lyaSize.y - startGroundHeight);
     add(lya);
-
   }
 
   @override
@@ -128,12 +127,4 @@ void main() {
 
     lya.position.x += pushSpeed;
   }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-
-    // canvas.scale(0.5);
-  }
-
 }
