@@ -7,6 +7,8 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
+import 'package:gamejam_baq_2023/menus/gameOver.dart';
+import 'package:gamejam_baq_2023/menus/start.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
 import 'package:gamejam_baq_2023/world/goal.dart';
 import 'package:gamejam_baq_2023/world/ground.dart';
@@ -17,10 +19,19 @@ void main() {
   Flame.device.fullScreen();
   Flame.device.setLandscape();
 
-  runApp(GameWidget(game: GameJam2023()));
-}
+  runApp(
+    GameWidget.controlled(
+      gameFactory: GameJam2023.new,
+      overlayBuilderMap: {
+          'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
+          'GameOver': (_, GameJam2023 game) => GameOver(game: game),
+        },  
+        initialActiveOverlays: const ['StartMenu'],
+      )
+    );
+  }
 
-class GameJam2023 extends FlameGame with HasCollisionDetection {
+  class GameJam2023 extends FlameGame with HasCollisionDetection {
 
   Lya lya = Lya();
   double gravity = 9.8;
@@ -109,6 +120,10 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     if (!lya.onGround) {
       velocity.y += gravity;
       lya.position.y += velocity.y * dt;
+    }
+
+    if(lya.onDead) {
+      overlays.add('GameOver');
     }
 
     lya.position.x += pushSpeed;
