@@ -1,11 +1,20 @@
 import 'package:flame/camera.dart';
+import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
+import 'package:gamejam_baq_2023/world/obstacle.dart';
+import 'package:gamejam_baq_2023/world/goal.dart';
 import 'package:gamejam_baq_2023/world/ground.dart';
+import 'package:gamejam_baq_2023/world/stage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Flame.device.fullScreen();
+  Flame.device.setLandscape();
+
   runApp(GameWidget(game: GameJam2023()));
 }
 
@@ -13,35 +22,56 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
 
   Lya lya = Lya();
   double gravity = 9.8;
+  double pushSpeed = 10;
   Vector2 velocity = Vector2(0, 0);
+
+  double? mapWidth;
+  double? mapHeight;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
-    TiledComponent homeMap = await TiledComponent.load('map.tmx', Vector2.all(32));
+    TiledComponent homeMap = await TiledComponent.load('level_01.tmx', Vector2.all(32));
     add(homeMap);
 
-    double mapWidth = 32.0 * homeMap.tileMap.map.width;
-    double mapHeight = 32.0 * homeMap.tileMap.map.height;
-    final obstacleGroup = homeMap.tileMap.getLayer<ObjectGroup>('ground');
+    mapWidth = 32.0 * homeMap.tileMap.map.width;
+    mapHeight = 32.0 * homeMap.tileMap.map.height;
+    final ground = homeMap.tileMap.getLayer<ObjectGroup>('ground');
 
-    for (final obj in obstacleGroup!.objects) {
+    for (final obj in ground!.objects) {
       add(Ground(size: Vector2(obj.width, obj.height), position: Vector2(obj.x, obj.y)));
     }
 
-    final boxes = homeMap.tileMap.getLayer<ObjectGroup>('boxes');
-
-    for (final box in boxes!.objects) {
-      add(Ground(size: Vector2(box.width, box.height), position: Vector2(box.x, box.y)));
+    final obstacles = homeMap.tileMap.getLayer<ObjectGroup>('obstacles');
+    for (final obstacle in obstacles!.objects) {
+      add(Obstacle(size: Vector2(obstacle.width, obstacle.height), position: Vector2(obstacle.x, obstacle.y)));
     }
 
-    camera.viewport = FixedResolutionViewport(Vector2(mapWidth, mapHeight));
+    final collectables = homeMap.tileMap.getLayer<ObjectGroup>('collectables');
+    for (final collectable in collectables!.objects) {
+      add(Goal(size: Vector2(collectable.width, collectable.height), position: Vector2(collectable.x, collectable.y)));
+    }
 
+    final stages = homeMap.tileMap.getLayer<ObjectGroup>('stages');
+    for (final stage in stages!.objects) {
+      add(Stage(size: Vector2(stage.width, stage.height), position: Vector2(stage.x, stage.y)));
+    }
+
+    final goal = homeMap.tileMap.getLayer<ObjectGroup>('goal');
+    for (final collectable in goal!.objects) {
+      add(Goal(size: Vector2(collectable.width, collectable.height), position: Vector2(collectable.x, collectable.y)));
+    }
+
+    camera.viewport = FixedResolutionViewport(Vector2(2368, mapHeight!));
+    camera.followComponent(lya, worldBounds: Rect.fromLTWH(0, 0, mapWidth!, mapHeight!), relativeOffset: const Anchor(0.05, 0.5));
+
+    double startGroundHeight = ground.objects.first.height;
+    Vector2 lyaSize = Vector2(320, 480);
     lya
-      ..sprite = await loadSprite('lya.png')
-      ..size = Vector2(192, 256)
-      ..position = Vector2(100, 30);
+      ..sprite = await loadSprite('lya-50.png')
+      ..size = lyaSize
+      ..position = Vector2(100, mapHeight! - lyaSize.y - startGroundHeight);
     add(lya);
 
   }
@@ -54,6 +84,15 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
       velocity.y += gravity;
       lya.position.y += velocity.y * dt;
     }
+
+    lya.position.x += pushSpeed;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    // canvas.scale(0.5);
   }
 
 }

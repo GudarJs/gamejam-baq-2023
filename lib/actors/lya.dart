@@ -28,4 +28,13 @@ class Lya extends SpriteComponent with CollisionCallbacks, HasGameRef<GameJam202
       onGround = true;
     }
   }
+
+  @override
+  void onCollisionEnd(PositionComponent other) {
+    super.onCollisionEnd(other);
+
+    if (other is Ground) {
+      onGround = false;
+    }
+  }
 }
