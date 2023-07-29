@@ -1,15 +1,25 @@
+import 'dart:developer';
+
 import 'package:flame/camera.dart';
+import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
+import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
+import 'package:gamejam_baq_2023/hud/hud.dart';
 import 'package:gamejam_baq_2023/world/ground.dart';
 
 void main() {
-  runApp(GameWidget(game: GameJam2023()));
+  runApp(MaterialApp(home: Scaffold(body: GameWidget(game: GameJam2023(), overlayBuilderMap: {
+    'HudOverlay': (BuildContext context, GameJam2023 game){
+      return Hud(game: game,);
+    }
+  },))));
 }
 
-class GameJam2023 extends FlameGame with HasCollisionDetection {
+class GameJam2023 extends FlameGame with HasCollisionDetection, TapDetector {
 
   Lya lya = Lya();
   double gravity = 9.8;
@@ -33,7 +43,8 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     final boxes = homeMap.tileMap.getLayer<ObjectGroup>('boxes');
 
     for (final box in boxes!.objects) {
-      add(Ground(size: Vector2(box.width, box.height), position: Vector2(box.x, box.y)));
+      // add(Ground(size: Vector2(box.width, box.height), position: Vector2(box.x, box.y)));
+      add(Instrument(tiledObject: box)..sprite = await loadSprite("box.png")..position = Vector2(box.x, box.y)..size = Vector2(box.width, box.height));
     }
 
     camera.viewport = FixedResolutionViewport(Vector2(mapWidth, mapHeight));
@@ -41,10 +52,27 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     lya
       ..sprite = await loadSprite('lya.png')
       ..size = Vector2(192, 256)
-      ..position = Vector2(100, 30);
+      ..position = Vector2(100, 350);
     add(lya);
 
+    overlays.add('HudOverlay');
+
   }
+
+  @override
+  void onTapDown(TapDownInfo info) {
+    log("object");
+    if (lya.onGround) {
+      lya.onGround =  false;
+      velocity.y -= 100;
+      lya.position.y -= 100;
+      
+    }
+    super.onTapDown(info);
+  }
+  
+
+  
 
   @override
   void update(double dt) {
@@ -52,7 +80,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
 
     if (!lya.onGround) {
       velocity.y += gravity;
-      lya.position.y += velocity.y * dt;
+      lya.position += velocity * dt;
     }
   }
 
