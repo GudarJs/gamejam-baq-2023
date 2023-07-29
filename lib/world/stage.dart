@@ -1,20 +1,16 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame_tiled/flame_tiled.dart';
 
-class Instrument extends SpriteComponent with CollisionCallbacks {
-  Instrument({
-    required this.tiledObject,
-  }) : super() {
+class Stage extends PositionComponent {
+  Stage({required size, required position}) : super(size: size, position: position) {
     debugMode = true;
   }
-
-  final TiledObject tiledObject;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
+    
     add(RectangleHitbox());
   }
+
 }

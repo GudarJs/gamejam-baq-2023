@@ -9,7 +9,7 @@ class Ground extends PositionComponent {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    
+
     add(RectangleHitbox());
   }
 
