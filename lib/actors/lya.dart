@@ -37,7 +37,12 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
       onGround = true;
     } else if (other is Obstacle) {
       gameRef.pushSpeed = 0;
-      gameRef.lya.animation = gameRef.hitAnimation;
+      double startGroundHeight = gameRef.groundObjects.first.height;
+      Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
+      gameRef.lya
+        ..animation = gameRef.hitAnimation
+        ..size = lyaSize
+        ..position = Vector2(gameRef.lya.position.x, gameRef.mapHeight - lyaSize.y - startGroundHeight);
       _declareDead();
     } else if (other is Instrument) {
       final String instrument = other.tiledObject.type;
@@ -46,7 +51,14 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
     } else if (other is Stage) {
       if ((y + height) >= other.height) {
         gameRef.pushSpeed = 0;
-        gameRef.lya.animation = gameRef.hitAnimation;
+        double startGroundHeight = gameRef.groundObjects.first.height;
+        Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
+        gameRef.lya
+          ..animation = gameRef.hitAnimation
+          ..size = lyaSize;
+        if (!gameRef.lya.onDead) {
+          gameRef.lya.position = Vector2(gameRef.lya.position.x, gameRef.mapHeight - lyaSize.y - startGroundHeight);
+        }
         // Future.delayed(const Duration(milliseconds: 400), () {
         //   game.lya.animation = game.deadAnimation;
         // });
@@ -63,7 +75,12 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
       onGround = false;
     } else if (other is Goal) {
       gameRef.pushSpeed = 0;
-      gameRef.lya.animation = gameRef.standAnimation;
+      double startGroundHeight = game.groundObjects.first.height;
+      Vector2 lyaSize = Vector2(640 / 2, 800 / 2);
+      game.lya
+        ..animation = game.victoryAnimation
+        ..size = lyaSize
+        ..position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
       onGoalReached = true;
     }
   }

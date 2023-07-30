@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/main.dart';
 
@@ -16,7 +17,12 @@ class StartMenu extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             game.pushSpeed = 18;
-            game.lya.animation = game.runAnimation;
+            double startGroundHeight = game.groundObjects.first.height;
+            Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
+            game.lya
+              ..animation = game.runAnimation
+              ..size = lyaSize
+              ..position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
             game.overlays.remove('StartMenu');
           },
           child: Container(

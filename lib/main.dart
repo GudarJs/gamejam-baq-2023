@@ -129,6 +129,9 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
         stepTime: 0.2);
     hitAnimation = SpriteAnimation.spriteList([await loadSprite('lya_hit.png')],
         stepTime: 0.2);
+    victoryAnimation = SpriteAnimation.spriteList(
+        await fromJSONAtlas('lya_victory.png', 'lya_victory.json'),
+        stepTime: 0.2);
 
     initializeGame(true);
   }
@@ -140,7 +143,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
         relativeOffset: const Anchor(0.05, 0.5));
 
     double startGroundHeight = groundObjects.first.height;
-    Vector2 lyaSize = Vector2(320, 480);
+    Vector2 lyaSize = Vector2(304 / 2, 465 / 2);
     lya
       ..animation = standAnimation
       ..size = lyaSize
@@ -168,7 +171,12 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     }
     remove(lya);
     lya = Lya();
-    lya.animation = runAnimation;
+    double startGroundHeight = groundObjects.first.height;
+    Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
+    lya
+      ..animation = runAnimation
+      ..size = lyaSize
+      ..position = Vector2(lya.position.x, mapHeight - lyaSize.y - startGroundHeight);
     camera.moveTo(Vector2.all(0));
     camera.resetMovement();
     initializeGame(false);

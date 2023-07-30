@@ -1,0 +1,60 @@
+{"frames": {
+
+"Victoria 1.png":
+{
+	"frame": {"x":0,"y":0,"w":640,"h":736},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":736},
+	"sourceSize": {"w":640,"h":736}
+},
+"Victoria 2.png":
+{
+	"frame": {"x":640,"y":0,"w":640,"h":736},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":736},
+	"sourceSize": {"w":640,"h":736}
+},
+"Victoria 3.png":
+{
+	"frame": {"x":1280,"y":0,"w":640,"h":736},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":736},
+	"sourceSize": {"w":640,"h":736}
+},
+"Victoria 4.png":
+{
+	"frame": {"x":0,"y":736,"w":640,"h":736},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":736},
+	"sourceSize": {"w":640,"h":736}
+},
+"Victoria 5.png":
+{
+	"frame": {"x":640,"y":736,"w":640,"h":800},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":800},
+	"sourceSize": {"w":640,"h":800}
+},
+"Victoria 6.png":
+{
+	"frame": {"x":1280,"y":736,"w":640,"h":800},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":800},
+	"sourceSize": {"w":640,"h":800}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "lyaWinning.png",
+	"format": "RGBA8888",
+	"size": {"w":1920,"h":1536},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:5d65452cdb69ca330d201096c3f1b8c5:1217cf3de66d403caeb5865398177da3:ffe9137512bc3773f811a971852a6621$"
+}
+}

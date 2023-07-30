@@ -64,16 +64,18 @@ class MobileControls extends StatelessWidget {
                     onPressed: () {
                       if (game.lya.onGoalReached || game.lya.onDead) { return; }
                       double startGroundHeight = game.groundObjects.first.height;
-                      Vector2 lyaSize = Vector2(480, 320);
-                      game.lya.animation = game.slideAnimation;
-                      game.lya.size = lyaSize;
-                      game.lya.position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
+                      Vector2 lyaSize = Vector2(611 / 2, 227 / 2);
+                      game.lya
+                        ..animation = game.slideAnimation
+                        ..size = lyaSize
+                        ..position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
                       Future.delayed(const Duration(milliseconds: 600), () {
-                        game.lya.animation = game.runAnimation;
-                      Vector2 lyaSize = Vector2(320, 480);
-                      game.lya.animation = game.runAnimation;
-                      game.lya.size = lyaSize;
-                      game.lya.position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
+                        double startGroundHeight = game.groundObjects.first.height;
+                        Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
+                        game.lya
+                          ..animation = game.runAnimation
+                          ..size = lyaSize
+                          ..position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
                       });
                     },
                   ),
@@ -83,12 +85,21 @@ class MobileControls extends StatelessWidget {
                       if (game.lya.onGoalReached || game.lya.onDead) { return; }
                       if (game.jumpCount >= 1) { return; }
                       game.lya.onGround = false;
-                      game.lya.animation = game.jumpAnimation;
+                      double startGroundHeight = game.groundObjects.first.height;
+                      Vector2 lyaSize = Vector2(280 / 2, 574 / 2);
+                      game.lya
+                        ..animation = game.jumpAnimation
+                        ..size = lyaSize
+                        ..position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
                       game.lya.y -= 200;
                       game.velocity.y = -game.jumpForce;
                       Future.delayed(const Duration(milliseconds: 600), () {
-                        game.lya.animation = game.runAnimation;
-                        game.lya.size = Vector2(320, 480);
+                        double startGroundHeight = game.groundObjects.first.height;
+                        Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
+                        game.lya
+                          ..animation = game.runAnimation
+                          ..size = lyaSize
+                          ..position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
                       });
                       game.jumpCount = 1;
                     },
