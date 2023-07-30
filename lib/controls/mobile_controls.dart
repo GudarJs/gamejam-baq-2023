@@ -35,15 +35,18 @@ class MobileControls extends StatelessWidget {
                     instrument: Image.asset('assets/images/sintetizador.png'),
                   ),
                   Expanded(child: Container()),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.white24.withOpacity(0.8),
-                        border: Border.all(width: 2),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.pause),
-                  )
+                  GestureDetector(
+                    onTap: () => game.pauseGame(),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.white24.withOpacity(0.8),
+                          border: Border.all(width: 2),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(Icons.pause),
+                    ),
+                  ),
                 ],
               ),
             ),
