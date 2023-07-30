@@ -33,11 +33,16 @@ void main() {
 class GameJam2023 extends FlameGame with HasCollisionDetection {
   Lya lya = Lya();
   double gravity = 100;
-  double pushSpeed = 18;
+  double pushSpeed = 0;
   Vector2 velocity = Vector2(0, 0);
 
-  double? mapWidth;
-  double? mapHeight;
+  late TiledComponent levelMap;
+  late double mapWidth;
+  late double mapHeight;
+
+  late List<Ground> groundObjects;
+  late List<Obstacle> obstacleObjects;
+  late List<Instrument> instrumentObjects;
 
   late SpriteAnimation standAnimation;
   late SpriteAnimation runAnimation;
@@ -51,52 +56,48 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    TiledComponent homeMap =
-        await TiledComponent.load('level_01.tmx', Vector2.all(32));
-    add(homeMap);
+    levelMap = await TiledComponent.load('level_01.tmx', Vector2.all(32));
+    add(levelMap);
 
-    mapWidth = 32.0 * homeMap.tileMap.map.width;
-    mapHeight = 32.0 * homeMap.tileMap.map.height;
-    final ground = homeMap.tileMap.getLayer<ObjectGroup>('ground');
+    mapWidth = 32.0 * levelMap.tileMap.map.width;
+    mapHeight = 32.0 * levelMap.tileMap.map.height;
 
-    for (final obj in ground!.objects) {
-      add(Ground(
-          size: Vector2(obj.width, obj.height),
-          position: Vector2(obj.x, obj.y)));
-    }
+    final ground = levelMap.tileMap.getLayer<ObjectGroup>('ground');
+    groundObjects = ground!.objects.map((obj) {
+      return Ground(
+        size: Vector2(obj.width, obj.height),
+        position: Vector2(obj.x, obj.y)
+      );
+    }).toList();
+    addAll(groundObjects);
 
-    final obstacles = homeMap.tileMap.getLayer<ObjectGroup>('obstacles');
-    for (final obstacle in obstacles!.objects) {
-      add(Obstacle(
-          size: Vector2(obstacle.width, obstacle.height),
-          position: Vector2(obstacle.x, obstacle.y)));
-    }
+    final obstacles = levelMap.tileMap.getLayer<ObjectGroup>('obstacles');
+    obstacleObjects = obstacles!.objects.map((obj) {
+      return Obstacle(
+        size: Vector2(obj.width, obj.height),
+        position: Vector2(obj.x, obj.y)
+      );
+    }).toList();
+    addAll(obstacleObjects);
+    
+    final collectables = levelMap.tileMap.getLayer<ObjectGroup>('collectables');
+    instrumentObjects = await Future.wait(collectables!.objects.map((obj) async {
+      return Instrument(tiledObject: obj)
+        ..sprite = await loadSprite('instruments/${obj.type}.png')
+        ..position = Vector2(obj.x, obj.y)
+        ..size = Vector2(obj.width, obj.height);
+    }).toList());
+    addAll(instrumentObjects);
 
-    final collectables = homeMap.tileMap.getLayer<ObjectGroup>('collectables');
-    for (final collectable in collectables!.objects) {
-      final instrument = Instrument(tiledObject: collectable)
-        ..sprite = await loadSprite('instruments/${collectable.type}.png')
-        ..position = Vector2(collectable.x, collectable.y)
-        ..size = Vector2(collectable.width, collectable.height);
-      add(instrument);
-    }
-
-    final stages = homeMap.tileMap.getLayer<ObjectGroup>('stages');
+    final stages = levelMap.tileMap.getLayer<ObjectGroup>('stages');
     for (final stage in stages!.objects) {
       add(Stage(
           size: Vector2(stage.width, stage.height),
           position: Vector2(stage.x, stage.y)));
     }
 
-    final goal = homeMap.tileMap.getLayer<ObjectGroup>('goal')!.objects.first;
-    add(Goal(
-        size: Vector2(goal.width, goal.height),
-        position: Vector2(goal.x, goal.y)));
-
-    camera.viewport = FixedResolutionViewport(Vector2(2368, mapHeight!));
-    camera.followComponent(lya,
-        worldBounds: Rect.fromLTWH(0, 0, mapWidth!, mapHeight!),
-        relativeOffset: const Anchor(0.05, 0.5));
+    final goal = levelMap.tileMap.getLayer<ObjectGroup>('goal')!.objects.first;
+    add(Goal(size: Vector2(goal.width, goal.height), position: Vector2(goal.x, goal.y)));
 
     standAnimation = SpriteAnimation.spriteList(
         [await loadSprite('lya_stand.png')],
@@ -113,13 +114,42 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     hitAnimation = SpriteAnimation.spriteList([await loadSprite('lya_hit.png')],
         stepTime: 0.2);
 
-    double startGroundHeight = ground.objects.first.height;
+    initializeGame(true);
+  }
+
+  Future<void> initializeGame(bool loadHud) async {
+    camera.viewport = FixedResolutionViewport(Vector2(2368, mapHeight));
+    camera.followComponent(lya, worldBounds: Rect.fromLTWH(0, 0, mapWidth, mapHeight), relativeOffset: const Anchor(0.05, 0.5));
+
+    double startGroundHeight = groundObjects.first.height;
     Vector2 lyaSize = Vector2(320, 480);
     lya
-      ..animation = runAnimation
+      ..animation = standAnimation
       ..size = lyaSize
-      ..position = Vector2(100, mapHeight! - lyaSize.y - startGroundHeight);
+      ..position = Vector2(100, mapHeight - lyaSize.y - startGroundHeight);
     add(lya);
+
+    if (loadHud) {
+      // overlays.add('Hud');
+    }
+  }
+
+  void reset() {
+    overlays.add('StartMenu');
+    gravity = 100;
+    pushSpeed = 0;
+    velocity = Vector2(0, 0);
+    for (final obj in instrumentObjects) {
+      if(obj.parent == null) {
+        add(obj);
+      }
+    }
+    remove(lya);
+    lya = Lya();
+    lya.animation = runAnimation;
+    camera.moveTo(Vector2.all(0));
+    camera.resetMovement();
+    initializeGame(false);
   }
 
   @override
