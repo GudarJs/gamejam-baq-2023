@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:gamejam_baq_2023/actors/instrument.dart';
@@ -17,7 +19,6 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
   bool onGround = false;
   bool onDead = false;
   bool onGoalReached = false;
-  List<Instrument> collectedInstruments = [];
 
   @override
   Future<void> onLoad() async {
@@ -39,7 +40,8 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
       gameRef.lya.animation = gameRef.hitAnimation;
       _declareDead();
     } else if (other is Instrument) {
-      collectedInstruments.add(other);
+      final String instrument = other.tiledObject.type;
+      game.instrumentsCollected[instrument] = true;
       gameRef.remove(other);
     } else if (other is Stage) {
       if ((y + height) >= other.height) {

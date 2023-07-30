@@ -57,6 +57,14 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   late SpriteAnimation deadAnimation;
   late SpriteAnimation victoryAnimation;
 
+  final Map<String, bool> instrumentsCollected = {
+    'piano': false,
+    'synthesizer': false,
+    'drum': false,
+    'guitar': false,
+    'voz': false,
+  };
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -154,6 +162,9 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
       if (obj.parent == null) {
         add(obj);
       }
+    }
+    for (final key in instrumentsCollected.keys) {
+      instrumentsCollected[key] = false;
     }
     remove(lya);
     lya = Lya();
