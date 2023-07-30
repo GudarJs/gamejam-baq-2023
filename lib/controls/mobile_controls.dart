@@ -22,9 +22,6 @@ class _MobileControlsState extends State<MobileControls> {
   @override
   void initState() {
     super.initState();
-    timer = async.Timer.periodic(Duration(milliseconds: 100), (e) {
-      setState(() {});
-    });
   }
 
   @override
@@ -95,47 +92,75 @@ class _MobileControlsState extends State<MobileControls> {
                   _ArrowButton(
                     icon: Icons.keyboard_arrow_down_rounded,
                     onPressed: () {
-                      if (widget.game.lya.onGoalReached || widget.game.lya.onDead) { return; }
+                      if (widget.game.lya.onGoalReached ||
+                          widget.game.lya.onDead) {
+                        return;
+                      }
                       SoundEffects.slide();
 
-                      double startGroundHeight = widget.game.groundObjects.first.height;
+                      double startGroundHeight =
+                          widget.game.groundObjects.first.height;
                       Vector2 lyaSize = Vector2(611 / 2, 227 / 2);
                       widget.game.lya
                         ..animation = widget.game.slideAnimation
                         ..size = lyaSize
-                        ..position = Vector2(widget.game.lya.position.x, widget.game.mapHeight - lyaSize.y - startGroundHeight);
+                        ..position = Vector2(
+                            widget.game.lya.position.x,
+                            widget.game.mapHeight -
+                                lyaSize.y -
+                                startGroundHeight);
                       Future.delayed(const Duration(milliseconds: 600), () {
-                        double startGroundHeight = widget.game.groundObjects.first.height;
+                        double startGroundHeight =
+                            widget.game.groundObjects.first.height;
                         Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
                         widget.game.lya
                           ..animation = widget.game.runAnimation
                           ..size = lyaSize
-                          ..position = Vector2(widget.game.lya.position.x, widget.game.mapHeight - lyaSize.y - startGroundHeight);
+                          ..position = Vector2(
+                              widget.game.lya.position.x,
+                              widget.game.mapHeight -
+                                  lyaSize.y -
+                                  startGroundHeight);
                       });
                     },
                   ),
                   _ArrowButton(
                     icon: Icons.keyboard_arrow_up_rounded,
                     onPressed: () {
-                      if (widget.game.lya.onGoalReached || widget.game.lya.onDead) { return; }
-                      if (widget.game.jumpCount >= 1) { return; }
+                      if (widget.game.lya.onGoalReached ||
+                          widget.game.lya.onDead) {
+                        return;
+                      }
+                      if (widget.game.jumpCount >= 1) {
+                        return;
+                      }
                       SoundEffects.jump();
                       widget.game.lya.onGround = false;
-                      double startGroundHeight = widget.game.groundObjects.first.height;
+                      double startGroundHeight =
+                          widget.game.groundObjects.first.height;
                       Vector2 lyaSize = Vector2(280 / 2, 574 / 2);
                       widget.game.lya
                         ..animation = widget.game.jumpAnimation
                         ..size = lyaSize
-                        ..position = Vector2(widget.game.lya.position.x, widget.game.mapHeight - lyaSize.y - startGroundHeight);
+                        ..position = Vector2(
+                            widget.game.lya.position.x,
+                            widget.game.mapHeight -
+                                lyaSize.y -
+                                startGroundHeight);
                       widget.game.lya.y -= 200;
                       widget.game.velocity.y = -widget.game.jumpForce;
                       Future.delayed(const Duration(milliseconds: 600), () {
-                        double startGroundHeight = widget.game.groundObjects.first.height;
+                        double startGroundHeight =
+                            widget.game.groundObjects.first.height;
                         Vector2 lyaSize = Vector2(305 / 2, 419 / 2);
                         widget.game.lya
                           ..animation = widget.game.runAnimation
                           ..size = lyaSize
-                          ..position = Vector2(widget.game.lya.position.x, widget.game.mapHeight - lyaSize.y - startGroundHeight);
+                          ..position = Vector2(
+                              widget.game.lya.position.x,
+                              widget.game.mapHeight -
+                                  lyaSize.y -
+                                  startGroundHeight);
                       });
                       widget.game.jumpCount = 1;
                     },
