@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,8 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    // FlameAudio.bgm.play('test.mp3');
 
     levelMap = await TiledComponent.load('level_01.tmx', Vector2.all(32));
     add(levelMap);
