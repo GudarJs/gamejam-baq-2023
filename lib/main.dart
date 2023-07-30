@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -13,7 +11,7 @@ import 'package:gamejam_baq_2023/controls/mobile_controls.dart';
 import 'package:gamejam_baq_2023/menus/gameOver.dart';
 import 'package:gamejam_baq_2023/menus/pause.dart';
 import 'package:gamejam_baq_2023/menus/start.dart';
-import 'package:gamejam_baq_2023/sounds/music_tracks.dart';
+import 'package:gamejam_baq_2023/menus/victory.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
 import 'package:gamejam_baq_2023/world/goal.dart';
 import 'package:gamejam_baq_2023/world/ground.dart';
@@ -31,6 +29,7 @@ void main() {
       'GameOver': (_, GameJam2023 game) => GameOver(game: game),
       'MobileControls': (_, GameJam2023 game) => MobileControls(game: game),
       'Pause': (_, GameJam2023 game) => Pause(game: game),
+      'Victory': (_, GameJam2023 game) => VictoryMenu(game: game),
     },
     initialActiveOverlays: const ['MobileControls', 'StartMenu'],
   ));
@@ -44,6 +43,24 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   final double jumpForce = 500;
   Vector2 velocity = Vector2(0, 0);
   final bgmMain = FlameAudio.bgm;
+
+  List<InstrumentSlot> instrumentsInLevel = [
+    InstrumentSlot(
+      instrument: Image.asset('assets/images/arpa.png'),
+    ),
+    InstrumentSlot(
+      instrument: Image.asset('assets/images/bateria.png'),
+    ),
+    InstrumentSlot(
+      instrument: Image.asset('assets/images/flauta.png'),
+    ),
+    InstrumentSlot(
+      instrument: Image.asset('assets/images/gaita.png'),
+    ),
+    InstrumentSlot(
+      instrument: Image.asset('assets/images/sintetizador.png'),
+    )
+  ];
 
   late TiledComponent levelMap;
   late double mapWidth;
@@ -66,7 +83,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     'synthesizer': false,
     'drum': false,
     'guitar': false,
-    'voz': false,
+    'microphone': false,
   };
 
   @override
@@ -210,5 +227,8 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     }
 
     lya.position.x += pushSpeed;
+    if (lya.onGoalReached) {
+      overlays.add('Victory');
+    }
   }
 }

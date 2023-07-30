@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="gamejam_baq_2023"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Melolya"
+        android:name="Melolya"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

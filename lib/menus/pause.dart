@@ -29,7 +29,6 @@ class _PauseState extends State<Pause> {
     super.initState();
     hint = !hint;
     timer = Timer.periodic(Duration(seconds: 1), (e) {
-      print("object");
       hint = !hint;
       setState(() {});
     });
@@ -100,6 +99,7 @@ class _PauseState extends State<Pause> {
                               CustomButtom(
                                 onTap: () {
                                   SoundEffects.touchMenu();
+                                  widget.game.resumeEngine();
                                   widget.game.reset();
                                   widget.game.bgmMain.stop();
                                   widget.game.overlays.remove('Pause');
