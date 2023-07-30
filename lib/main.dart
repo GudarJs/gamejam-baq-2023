@@ -24,9 +24,9 @@ void main() {
     overlayBuilderMap: {
       'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
       'GameOver': (_, GameJam2023 game) => GameOver(game: game),
-      'Hud': (_, GameJam2023 game) => MobileControls(game: game),
+      'MobileControls': (_, GameJam2023 game) => MobileControls(game: game),
     },
-    initialActiveOverlays: const ['Hud'],
+    initialActiveOverlays: const ['StartMenu', 'MobileControls'],
   ));
 }
 
@@ -161,9 +161,9 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
       lya.position += velocity * dt;
     }
 
-    // if (lya.onDead) {
-    //   overlays.add('GameOver');
-    // }
+    if (lya.onDead) {
+      overlays.add('GameOver');
+    }
 
     lya.position.x += pushSpeed;
   }
