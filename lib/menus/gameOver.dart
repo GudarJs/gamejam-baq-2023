@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/main.dart';
 
+import '../customs/custom_buttom.dart';
 
 class GameOver extends StatelessWidget {
   // Reference to parent game.
@@ -10,21 +11,18 @@ class GameOver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const blackTextColor = Color.fromRGBO(136, 47, 163, 1);
-    const whiteTextColor = Color.fromRGBO(255, 255, 255, 1.0);
+    final blackTextColor = Colors.black.withOpacity(0.8);
+    const whiteTextColor = Color.fromRGBO(255, 255, 255, 1);
 
     return Material(
       color: Colors.transparent,
       child: Center(
         child: Container(
           padding: const EdgeInsets.all(10.0),
-          height: 250,
-          width: 300,
-          decoration: const BoxDecoration(
+          height: double.infinity,
+          width: double.infinity,
+          decoration: BoxDecoration(
             color: blackTextColor,
-            borderRadius: BorderRadius.all(
-              Radius.circular(20),
-            ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -33,38 +31,24 @@ class GameOver extends StatelessWidget {
                 'Game Over',
                 style: TextStyle(
                   color: whiteTextColor,
-                  fontSize: 24,
+                  fontSize: 70,
+                  fontFamily: 'avigea',
+                  letterSpacing: 7,
                 ),
               ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: 200,
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: () {
-                    game.reset();
-                    game.overlays.remove('GameOver');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: whiteTextColor,
-                  ),
-                  child: const Text(
-                    'Play Again',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: blackTextColor,
-                    ),
-                  ),
+              CustomButtom(
+                onTap: () {
+                  game.reset();
+                  game.overlays.remove('GameOver');
+                },
+                title: "Try Again",
+                icon: Icon(
+                  Icons.restart_alt_rounded,
+                  color: Colors.white,
+                  size: 28,
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-'''Try it again''',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: whiteTextColor,
-                  fontSize: 14,
-                ),
+                secondaryColor: Color(0xFF15156a),
+                mainColor: Color(0xFF233a8a),
               ),
             ],
           ),
