@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/main.dart';
-import 'package:gamejam_baq_2023/menus/gameOver.dart';
+
+import '../customs/custom_buttom.dart';
 
 class Pause extends StatefulWidget {
   const Pause({
