@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -11,6 +13,7 @@ import 'package:gamejam_baq_2023/controls/mobile_controls.dart';
 import 'package:gamejam_baq_2023/menus/gameOver.dart';
 import 'package:gamejam_baq_2023/menus/pause.dart';
 import 'package:gamejam_baq_2023/menus/start.dart';
+import 'package:gamejam_baq_2023/sounds/music_tracks.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
 import 'package:gamejam_baq_2023/world/goal.dart';
 import 'package:gamejam_baq_2023/world/ground.dart';
@@ -40,6 +43,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   double jumpCount = 0;
   final double jumpForce = 500;
   Vector2 velocity = Vector2(0, 0);
+  final bgmMain = FlameAudio.bgm;
 
   late TiledComponent levelMap;
   late double mapWidth;
@@ -69,7 +73,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // FlameAudio.bgm.play('test.mp3');
+    await FlameAudio.audioCache.loadAll(['jump.mp3', 'slide.mp3', 'pause.mp3']);
 
     levelMap = await TiledComponent.load('level_01.tmx', Vector2.all(32));
     add(levelMap);

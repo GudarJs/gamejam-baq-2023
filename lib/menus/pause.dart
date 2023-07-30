@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/main.dart';
+import 'package:gamejam_baq_2023/sounds/music_tracks.dart';
+import 'package:gamejam_baq_2023/sounds/sound_effects.dart';
 
 import '../customs/custom_buttom.dart';
+import '../sounds/sound_effects.dart';
 
 class Pause extends StatefulWidget {
   const Pause({
@@ -42,6 +45,7 @@ class _PauseState extends State<Pause> {
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
     final widht = MediaQuery.sizeOf(context).width;
+
     return Material(
       color: Colors.transparent,
       child: Center(
@@ -79,19 +83,25 @@ class _PauseState extends State<Pause> {
                                 ),
                               ),
                               CustomButtom(
-                                onTap: () => widget.game.continueGame(),
+                                onTap: () {
+                                  SoundEffects.touchMenu();
+                                  widget.game.bgmMain.resume();
+                                  widget.game.continueGame();
+                                },
                                 title: "Continue",
                                 icon: const Icon(
                                   Icons.skip_next_rounded,
                                   color: Colors.white,
                                   size: 28,
                                 ),
-                                secondaryColor: Color(0xFF233a8a),
-                                mainColor: Color(0xFF15156a),
+                                secondaryColor: const Color(0xFF233a8a),
+                                mainColor: const Color(0xFF15156a),
                               ),
                               CustomButtom(
                                 onTap: () {
+                                  SoundEffects.touchMenu();
                                   widget.game.reset();
+                                  widget.game.bgmMain.stop();
                                   widget.game.overlays.remove('Pause');
                                 },
                                 title: "Restart",
@@ -100,8 +110,8 @@ class _PauseState extends State<Pause> {
                                   color: Colors.white,
                                   size: 28,
                                 ),
-                                secondaryColor: Color(0xFF233a8a),
-                                mainColor: Color(0xFF15156a),
+                                secondaryColor: const Color(0xFF233a8a),
+                                mainColor: const Color(0xFF15156a),
                               )
                             ],
                           ),
@@ -119,11 +129,11 @@ class _PauseState extends State<Pause> {
                 right: 6,
                 top: 2,
                 child: AnimatedScale(
-                  duration: Duration(seconds: 1),
+                  duration: const Duration(seconds: 1),
                   scale: hint ? 0.1 : 1,
                   child: RotatedBox(
                       quarterTurns: !hint ? 1 : 3,
-                      child: Icon(
+                      child: const Icon(
                         Icons.star,
                         color: Colors.white,
                         size: 15,
@@ -133,11 +143,11 @@ class _PauseState extends State<Pause> {
                 left: 6,
                 bottom: 2,
                 child: AnimatedScale(
-                  duration: Duration(seconds: 1),
+                  duration: const Duration(seconds: 1),
                   scale: !hint ? 0.1 : 1,
                   child: RotatedBox(
                       quarterTurns: !hint ? 1 : 3,
-                      child: Icon(
+                      child: const Icon(
                         Icons.star,
                         color: Colors.white,
                         size: 15,

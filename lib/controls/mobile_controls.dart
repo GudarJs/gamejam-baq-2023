@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../sounds/sound_effects.dart';
 
 class MobileControls extends StatelessWidget {
   final GameJam2023 game;
@@ -40,18 +41,29 @@ class MobileControls extends StatelessWidget {
                     instrument: Image.asset('assets/images/sintetizador.png'),
                   ),
                   Expanded(child: Container()),
-                  GestureDetector(
-                    onTap: () => game.pauseGame(),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: Colors.white24.withOpacity(0.8),
-                          border: Border.all(width: 2),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(Icons.pause),
-                    ),
-                  ),
+                  _PauseButton(
+                    icon: Icons.pause,
+                    onTap: () {
+                      SoundEffects.pause();
+                      // MusicTracks.pauseMusic(1);
+                      game.bgmMain.pause();
+                      game.pauseGame();
+                    },
+                  )
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     game.pauseGame();
+                  //   },
+                  //   child: Container(
+                  //     width: 50,
+                  //     height: 50,
+                  //     decoration: BoxDecoration(
+                  //         color: Colors.white24.withOpacity(0.8),
+                  //         border: Border.all(width: 2),
+                  //         borderRadius: BorderRadius.circular(10)),
+                  //     child: const Icon(Icons.pause),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -63,6 +75,8 @@ class MobileControls extends StatelessWidget {
                     icon: Icons.keyboard_arrow_down_rounded,
                     onPressed: () {
                       if (game.lya.onGoalReached || game.lya.onDead) { return; }
+                      SoundEffects.slide();
+
                       double startGroundHeight = game.groundObjects.first.height;
                       Vector2 lyaSize = Vector2(611 / 2, 227 / 2);
                       game.lya
@@ -84,6 +98,7 @@ class MobileControls extends StatelessWidget {
                     onPressed: () {
                       if (game.lya.onGoalReached || game.lya.onDead) { return; }
                       if (game.jumpCount >= 1) { return; }
+                      SoundEffects.jump();
                       game.lya.onGround = false;
                       double startGroundHeight = game.groundObjects.first.height;
                       Vector2 lyaSize = Vector2(280 / 2, 574 / 2);
@@ -146,12 +161,12 @@ class _ArrowButton extends StatelessWidget {
 class _PauseButton extends StatelessWidget {
   const _PauseButton({
     required this.icon,
-    required this.onPressed,
+    required this.onTap,
     super.key,
   });
 
   final IconData icon;
-  final void Function()? onPressed;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -159,13 +174,12 @@ class _PauseButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       color: Colors.grey.shade400.withOpacity(0.4),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Container(
           width: 50,
           height: 50,
           decoration: BoxDecoration(
             color: Colors.grey.shade600.withOpacity(0.4),
-            // border: Border.all(width: 2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(

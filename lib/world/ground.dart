@@ -2,8 +2,9 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 class Ground extends PositionComponent {
-  Ground({required size, required position}) : super(size: size, position: position) {
-    debugMode = true;
+  Ground({required size, required position})
+      : super(size: size, position: position) {
+    debugMode = false;
   }
 
   @override
@@ -12,5 +13,4 @@ class Ground extends PositionComponent {
 
     add(RectangleHitbox());
   }
-
 }
