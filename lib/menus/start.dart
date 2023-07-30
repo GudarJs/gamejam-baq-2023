@@ -24,13 +24,13 @@ class StartMenu extends StatelessWidget {
             height: double.infinity,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
+              color: Colors.black.withOpacity(0.7),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Collect all instruments and coins',
+                  'Collect all instruments!',
                   style: TextStyle(
                     color: whiteTextColor,
                     fontSize: 30,

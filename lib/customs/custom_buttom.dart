@@ -30,7 +30,6 @@ class _CustomButtomState extends State<CustomButtom> {
     super.initState();
     hint = !hint;
     timer = Timer.periodic(Duration(seconds: 1), (e) {
-      print("object");
       hint = !hint;
       setState(() {});
     });

@@ -1,18 +1,42 @@
+import 'dart:async' as async;
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 
-class MobileControls extends StatelessWidget {
+class MobileControls extends StatefulWidget {
   final GameJam2023 game;
-  const MobileControls({super.key, required this.game});
+  const MobileControls({
+    super.key,
+    required this.game,
+  });
+
+  @override
+  State<MobileControls> createState() => _MobileControlsState();
+}
+
+class _MobileControlsState extends State<MobileControls> {
+  async.Timer? timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = async.Timer.periodic(Duration(milliseconds: 100), (e) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        // color: Colors.red,
+        padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -20,28 +44,25 @@ class MobileControls extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InstrumentSlot(
-                    instrument: Image.asset('assets/images/arpa.png'),
-                  ),
-                  const SizedBox(width: 8),
-                  InstrumentSlot(
-                    instrument: Image.asset('assets/images/bateria.png'),
-                  ),
-                  const SizedBox(width: 8),
-                  InstrumentSlot(
-                    instrument: Image.asset('assets/images/flauta.png'),
-                  ),
-                  const SizedBox(width: 8),
-                  InstrumentSlot(
-                    instrument: Image.asset('assets/images/gaita.png'),
-                  ),
-                  const SizedBox(width: 8),
-                  InstrumentSlot(
-                    instrument: Image.asset('assets/images/sintetizador.png'),
-                  ),
+                  ...widget.game.instrumentsCollected.entries
+                      .map((value) => value.value
+                          ? Container(
+                              margin: EdgeInsets.all(10),
+                              child: Image.asset(
+                                "assets/images/instruments/${value.key}.png",
+                                width: 40,
+                              ),
+                            )
+                          : Container(
+                              margin: EdgeInsets.all(10),
+                              child: Image.asset(
+                                "assets/images/instruments/${value.key}_black.png",
+                                width: 40,
+                              ),
+                            )),
                   Expanded(child: Container()),
                   GestureDetector(
-                    onTap: () => game.pauseGame(),
+                    onTap: () => widget.game.pauseGame(),
                     child: Container(
                       width: 50,
                       height: 50,
@@ -62,35 +83,52 @@ class MobileControls extends StatelessWidget {
                   _ArrowButton(
                     icon: Icons.keyboard_arrow_down_rounded,
                     onPressed: () {
-                      if (game.lya.onGoalReached || game.lya.onDead) { return; }
-                      double startGroundHeight = game.groundObjects.first.height;
+                      if (widget.game.lya.onGoalReached ||
+                          widget.game.lya.onDead) {
+                        return;
+                      }
+                      double startGroundHeight =
+                          widget.game.groundObjects.first.height;
                       Vector2 lyaSize = Vector2(480, 320);
-                      game.lya.animation = game.slideAnimation;
-                      game.lya.size = lyaSize;
-                      game.lya.position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
+                      widget.game.lya.animation = widget.game.slideAnimation;
+                      widget.game.lya.size = lyaSize;
+                      widget.game.lya.position = Vector2(
+                          widget.game.lya.position.x,
+                          widget.game.mapHeight -
+                              lyaSize.y -
+                              startGroundHeight);
                       Future.delayed(const Duration(milliseconds: 600), () {
-                        game.lya.animation = game.runAnimation;
-                      Vector2 lyaSize = Vector2(320, 480);
-                      game.lya.animation = game.runAnimation;
-                      game.lya.size = lyaSize;
-                      game.lya.position = Vector2(game.lya.position.x, game.mapHeight - lyaSize.y - startGroundHeight);
+                        widget.game.lya.animation = widget.game.runAnimation;
+                        Vector2 lyaSize = Vector2(320, 480);
+                        widget.game.lya.animation = widget.game.runAnimation;
+                        widget.game.lya.size = lyaSize;
+                        widget.game.lya.position = Vector2(
+                            widget.game.lya.position.x,
+                            widget.game.mapHeight -
+                                lyaSize.y -
+                                startGroundHeight);
                       });
                     },
                   ),
                   _ArrowButton(
                     icon: Icons.keyboard_arrow_up_rounded,
                     onPressed: () {
-                      if (game.lya.onGoalReached || game.lya.onDead) { return; }
-                      if (game.jumpCount >= 1) { return; }
-                      game.lya.onGround = false;
-                      game.lya.animation = game.jumpAnimation;
-                      game.lya.y -= 200;
-                      game.velocity.y = -game.jumpForce;
+                      if (widget.game.lya.onGoalReached ||
+                          widget.game.lya.onDead) {
+                        return;
+                      }
+                      if (widget.game.jumpCount >= 1) {
+                        return;
+                      }
+                      widget.game.lya.onGround = false;
+                      widget.game.lya.animation = widget.game.jumpAnimation;
+                      widget.game.lya.y -= 200;
+                      widget.game.velocity.y = -widget.game.jumpForce;
                       Future.delayed(const Duration(milliseconds: 600), () {
-                        game.lya.animation = game.runAnimation;
-                        game.lya.size = Vector2(320, 480);
+                        widget.game.lya.animation = widget.game.runAnimation;
+                        widget.game.lya.size = Vector2(320, 480);
                       });
-                      game.jumpCount = 1;
+                      widget.game.jumpCount = 1;
                     },
                   ),
                 ],
@@ -167,6 +205,33 @@ class _PauseButton extends StatelessWidget {
   }
 }
 
+class InstrumentHud extends StatelessWidget {
+  const InstrumentHud({super.key, required this.instruments});
+  final List instruments;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.red.withOpacity(0.8),
+      ),
+      child: Row(
+        children: [...instruments],
+      ),
+    );
+  }
+}
+
+Map json = {
+  'sintetizador': false,
+  'bateria': false,
+  'microfono': false,
+  'piano': false,
+  'voz': false
+};
+
 class InstrumentSlot extends StatelessWidget {
   final Image instrument;
   const InstrumentSlot({
@@ -177,10 +242,12 @@ class InstrumentSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(7),
+      margin: EdgeInsets.all(3),
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-          color: Colors.white24.withOpacity(0.8),
+          color: Colors.white.withOpacity(0.5),
           border: Border.all(width: 2),
           borderRadius: BorderRadius.circular(10)),
       child: instrument,
