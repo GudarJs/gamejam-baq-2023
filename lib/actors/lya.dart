@@ -1,17 +1,20 @@
+import 'dart:developer';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/main.dart';
+import 'package:gamejam_baq_2023/sounds/sound_effects.dart';
 import 'package:gamejam_baq_2023/world/goal.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
 import 'package:gamejam_baq_2023/world/stage.dart';
 
 import '../world/ground.dart';
 
-class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<GameJam2023> {
-
+class Lya extends SpriteAnimationComponent
+    with CollisionCallbacks, HasGameRef<GameJam2023> {
   Lya() : super() {
-    debugMode = true;
+    debugMode = false;
   }
 
   bool onGround = false;
@@ -22,7 +25,7 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    
+
     add(RectangleHitbox());
   }
 
@@ -39,11 +42,13 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
       _declareDead();
     } else if (other is Instrument) {
       collectedInstruments.add(other);
+      SoundEffects.correctItem();
       gameRef.remove(other);
     } else if (other is Stage) {
       if ((y + height) >= other.height) {
         gameRef.pushSpeed = 0;
-        gameRef.lya.animation = gameRef.hitAnimation; // TODO: change to dead animation
+        gameRef.lya.animation =
+            gameRef.hitAnimation; // TODO: change to dead animation
         _declareDead();
       }
     }
@@ -63,8 +68,14 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
   }
 
   void _declareDead() {
-      gameRef.camera.speed = 3000;
-      gameRef.camera.moveTo(Vector2(gameRef.lya.position.x - gameRef.lya.width - (gameRef.lya.width / 2) - (gameRef.canvasSize.x / 2), gameRef.camera.position.y));
-      onDead = true;
+    // SoundEffects.fallDown();
+    gameRef.camera.speed = 3000;
+    gameRef.camera.moveTo(Vector2(
+        gameRef.lya.position.x -
+            gameRef.lya.width -
+            (gameRef.lya.width / 2) -
+            (gameRef.canvasSize.x / 2),
+        gameRef.camera.position.y));
+    onDead = true;
   }
 }

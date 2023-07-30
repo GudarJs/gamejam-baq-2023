@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/main.dart';
+import 'package:gamejam_baq_2023/sounds/music_tracks.dart';
+import 'package:gamejam_baq_2023/sounds/sound_effects.dart';
 
 class StartMenu extends StatelessWidget {
   // Reference to parent game.
@@ -15,6 +17,8 @@ class StartMenu extends StatelessWidget {
       child: Center(
         child: GestureDetector(
           onTap: () {
+            SoundEffects.play();
+            game.bgmMain.play('background_music.mp3');
             game.pushSpeed = 18;
             game.lya.animation = game.runAnimation;
             game.overlays.remove('StartMenu');

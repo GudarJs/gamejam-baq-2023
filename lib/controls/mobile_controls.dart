@@ -1,6 +1,9 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:gamejam_baq_2023/sounds/music_tracks.dart';
 
 import '../main.dart';
+import '../sounds/sound_effects.dart';
 
 class MobileControls extends StatelessWidget {
   final GameJam2023 game;
@@ -39,18 +42,29 @@ class MobileControls extends StatelessWidget {
                     instrument: Image.asset('assets/images/sintetizador.png'),
                   ),
                   Expanded(child: Container()),
-                  GestureDetector(
-                    onTap: () => game.pauseGame(),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: Colors.white24.withOpacity(0.8),
-                          border: Border.all(width: 2),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(Icons.pause),
-                    ),
-                  ),
+                  _PauseButton(
+                    icon: Icons.pause,
+                    onTap: () {
+                      SoundEffects.pause();
+                      // MusicTracks.pauseMusic(1);
+                      game.bgmMain.pause();
+                      game.pauseGame();
+                    },
+                  )
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     game.pauseGame();
+                  //   },
+                  //   child: Container(
+                  //     width: 50,
+                  //     height: 50,
+                  //     decoration: BoxDecoration(
+                  //         color: Colors.white24.withOpacity(0.8),
+                  //         border: Border.all(width: 2),
+                  //         borderRadius: BorderRadius.circular(10)),
+                  //     child: const Icon(Icons.pause),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -61,6 +75,7 @@ class MobileControls extends StatelessWidget {
                   _ArrowButton(
                     icon: Icons.keyboard_arrow_up_rounded,
                     onPressed: () {
+                      SoundEffects.jump();
                       if (game.lya.onGround) {
                         game.lya.onGround = false;
                         game.velocity.y -= 100;
@@ -71,6 +86,7 @@ class MobileControls extends StatelessWidget {
                   _ArrowButton(
                     icon: Icons.keyboard_arrow_down_rounded,
                     onPressed: () {
+                      SoundEffects.slide();
                       if (game.lya.onGround) {
                         game.lya.onGround = false;
                         game.velocity.y -= 100;
@@ -124,12 +140,12 @@ class _ArrowButton extends StatelessWidget {
 class _PauseButton extends StatelessWidget {
   const _PauseButton({
     required this.icon,
-    required this.onPressed,
+    required this.onTap,
     super.key,
   });
 
   final IconData icon;
-  final void Function()? onPressed;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -137,13 +153,12 @@ class _PauseButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       color: Colors.grey.shade400.withOpacity(0.4),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Container(
           width: 50,
           height: 50,
           decoration: BoxDecoration(
             color: Colors.grey.shade600.withOpacity(0.4),
-            // border: Border.all(width: 2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(
