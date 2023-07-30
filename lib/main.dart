@@ -11,6 +11,7 @@ import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
 import 'package:gamejam_baq_2023/controls/mobile_controls.dart';
 import 'package:gamejam_baq_2023/menus/gameOver.dart';
+import 'package:gamejam_baq_2023/menus/pause.dart';
 import 'package:gamejam_baq_2023/menus/start.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
 import 'package:gamejam_baq_2023/world/goal.dart';
@@ -28,8 +29,9 @@ void main() {
       'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
       'GameOver': (_, GameJam2023 game) => GameOver(game: game),
       'MobileControls': (_, GameJam2023 game) => MobileControls(game: game),
+      'Pause': (_, GameJam2023 game) => Pause(game: game),
     },
-    initialActiveOverlays: const ['StartMenu', 'MobileControls'],
+    initialActiveOverlays: const ['MobileControls', 'StartMenu'],
   ));
 }
 
@@ -159,6 +161,16 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     camera.moveTo(Vector2.all(0));
     camera.resetMovement();
     initializeGame(false);
+  }
+
+  void pauseGame() {
+    pauseEngine();
+    overlays.add('Pause');
+  }
+
+  void continueGame() {
+    overlays.remove('Pause');
+    resumeEngine();
   }
 
   @override
