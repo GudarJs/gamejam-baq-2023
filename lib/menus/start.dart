@@ -42,6 +42,8 @@ class StartMenu extends StatelessWidget {
                 height: 75,
                 child: ElevatedButton(
                   onPressed: () {
+                    game.pushSpeed = 18;
+                    game.lya.animation = game.runAnimation;
                     game.overlays.remove('StartMenu');
                   },
                   style: ElevatedButton.styleFrom(
@@ -54,17 +56,6 @@ class StartMenu extends StatelessWidget {
                       color: blackTextColor,
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-'''Use WASD or Arrow Keys for movement.
-Space bar to jump.
-Collect as many stars as you can and avoid enemies!''',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: whiteTextColor,
-                  fontSize: 14,
                 ),
               ),
             ],
