@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
 import 'package:gamejam_baq_2023/controls/mobile_controls.dart';
 import 'package:gamejam_baq_2023/menus/gameOver.dart';
+import 'package:gamejam_baq_2023/menus/pause.dart';
 import 'package:gamejam_baq_2023/menus/start.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
 import 'package:gamejam_baq_2023/world/goal.dart';
@@ -25,8 +27,9 @@ void main() {
       'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
       'GameOver': (_, GameJam2023 game) => GameOver(game: game),
       'MobileControls': (_, GameJam2023 game) => MobileControls(game: game),
+      'Pause': (_, GameJam2023 game) => Pause(game: game),
     },
-    initialActiveOverlays: const ['StartMenu', 'MobileControls'],
+    initialActiveOverlays: const ['MobileControls', 'StartMenu'],
   ));
 }
 
@@ -56,6 +59,8 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   Future<void> onLoad() async {
     await super.onLoad();
 
+    // FlameAudio.bgm.play('test.mp3');
+
     levelMap = await TiledComponent.load('level_01.tmx', Vector2.all(32));
     add(levelMap);
 
@@ -65,23 +70,22 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     final ground = levelMap.tileMap.getLayer<ObjectGroup>('ground');
     groundObjects = ground!.objects.map((obj) {
       return Ground(
-        size: Vector2(obj.width, obj.height),
-        position: Vector2(obj.x, obj.y)
-      );
+          size: Vector2(obj.width, obj.height),
+          position: Vector2(obj.x, obj.y));
     }).toList();
     addAll(groundObjects);
 
     final obstacles = levelMap.tileMap.getLayer<ObjectGroup>('obstacles');
     obstacleObjects = obstacles!.objects.map((obj) {
       return Obstacle(
-        size: Vector2(obj.width, obj.height),
-        position: Vector2(obj.x, obj.y)
-      );
+          size: Vector2(obj.width, obj.height),
+          position: Vector2(obj.x, obj.y));
     }).toList();
     addAll(obstacleObjects);
-    
+
     final collectables = levelMap.tileMap.getLayer<ObjectGroup>('collectables');
-    instrumentObjects = await Future.wait(collectables!.objects.map((obj) async {
+    instrumentObjects =
+        await Future.wait(collectables!.objects.map((obj) async {
       return Instrument(tiledObject: obj)
         ..sprite = await loadSprite('instruments/${obj.type}.png')
         ..position = Vector2(obj.x, obj.y)
@@ -97,7 +101,9 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     }
 
     final goal = levelMap.tileMap.getLayer<ObjectGroup>('goal')!.objects.first;
-    add(Goal(size: Vector2(goal.width, goal.height), position: Vector2(goal.x, goal.y)));
+    add(Goal(
+        size: Vector2(goal.width, goal.height),
+        position: Vector2(goal.x, goal.y)));
 
     standAnimation = SpriteAnimation.spriteList(
         [await loadSprite('lya_stand.png')],
@@ -119,7 +125,9 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
 
   Future<void> initializeGame(bool loadHud) async {
     camera.viewport = FixedResolutionViewport(Vector2(2368, mapHeight));
-    camera.followComponent(lya, worldBounds: Rect.fromLTWH(0, 0, mapWidth, mapHeight), relativeOffset: const Anchor(0.05, 0.5));
+    camera.followComponent(lya,
+        worldBounds: Rect.fromLTWH(0, 0, mapWidth, mapHeight),
+        relativeOffset: const Anchor(0.05, 0.5));
 
     double startGroundHeight = groundObjects.first.height;
     Vector2 lyaSize = Vector2(320, 480);
@@ -140,7 +148,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     pushSpeed = 0;
     velocity = Vector2(0, 0);
     for (final obj in instrumentObjects) {
-      if(obj.parent == null) {
+      if (obj.parent == null) {
         add(obj);
       }
     }
@@ -150,6 +158,16 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     camera.moveTo(Vector2.all(0));
     camera.resetMovement();
     initializeGame(false);
+  }
+
+  void pauseGame() {
+    pauseEngine();
+    overlays.add('Pause');
+  }
+
+  void continueGame() {
+    overlays.remove('Pause');
+    resumeEngine();
   }
 
   @override
