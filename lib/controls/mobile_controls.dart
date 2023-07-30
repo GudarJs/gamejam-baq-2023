@@ -131,7 +131,7 @@ class _MobileControlsState extends State<MobileControls> {
                           widget.game.lya.onDead) {
                         return;
                       }
-                      if (widget.game.jumpCount >= 1) {
+                      if (widget.game.jumpCount >= 2) {
                         return;
                       }
                       SoundEffects.jump();

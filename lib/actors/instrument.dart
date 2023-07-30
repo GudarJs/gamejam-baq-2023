@@ -6,7 +6,7 @@ class Instrument extends SpriteComponent with CollisionCallbacks {
   Instrument({
     required this.tiledObject,
   }) : super() {
-    debugMode = true;
+    debugMode = false;
   }
 
   final TiledObject tiledObject;

@@ -44,24 +44,6 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
   Vector2 velocity = Vector2(0, 0);
   final bgmMain = FlameAudio.bgm;
 
-  List<InstrumentSlot> instrumentsInLevel = [
-    InstrumentSlot(
-      instrument: Image.asset('assets/images/arpa.png'),
-    ),
-    InstrumentSlot(
-      instrument: Image.asset('assets/images/bateria.png'),
-    ),
-    InstrumentSlot(
-      instrument: Image.asset('assets/images/flauta.png'),
-    ),
-    InstrumentSlot(
-      instrument: Image.asset('assets/images/gaita.png'),
-    ),
-    InstrumentSlot(
-      instrument: Image.asset('assets/images/sintetizador.png'),
-    )
-  ];
-
   late TiledComponent levelMap;
   late double mapWidth;
   late double mapHeight;
