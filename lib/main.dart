@@ -32,8 +32,10 @@ void main() {
 
 class GameJam2023 extends FlameGame with HasCollisionDetection {
   Lya lya = Lya();
-  double gravity = 100;
+  double gravity = 50;
   double pushSpeed = 0;
+  double jumpCount = 0;
+  final double jumpForce = 500;
   Vector2 velocity = Vector2(0, 0);
 
   late TiledComponent levelMap;
@@ -138,6 +140,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
     overlays.add('StartMenu');
     gravity = 100;
     pushSpeed = 0;
+    jumpCount = 0;
     velocity = Vector2(0, 0);
     for (final obj in instrumentObjects) {
       if(obj.parent == null) {

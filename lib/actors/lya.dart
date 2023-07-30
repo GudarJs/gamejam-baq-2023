@@ -31,6 +31,7 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
     super.onCollision(intersectionPoints, other);
 
     if (other is Ground) {
+      gameRef.jumpCount = 0;
       gameRef.velocity.y = 0;
       onGround = true;
     } else if (other is Obstacle) {
@@ -43,7 +44,10 @@ class Lya extends SpriteAnimationComponent with CollisionCallbacks, HasGameRef<G
     } else if (other is Stage) {
       if ((y + height) >= other.height) {
         gameRef.pushSpeed = 0;
-        gameRef.lya.animation = gameRef.hitAnimation; // TODO: change to dead animation
+        gameRef.lya.animation = gameRef.hitAnimation;
+        // Future.delayed(const Duration(milliseconds: 400), () {
+        //   game.lya.animation = game.deadAnimation;
+        // });
         _declareDead();
       }
     }
