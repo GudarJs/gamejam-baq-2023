@@ -1,4 +1,3 @@
-import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -7,6 +6,7 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
+import 'package:gamejam_baq_2023/controls/mobile_controls.dart';
 import 'package:gamejam_baq_2023/menus/gameOver.dart';
 import 'package:gamejam_baq_2023/menus/start.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
@@ -24,8 +24,9 @@ void main() {
     overlayBuilderMap: {
       'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
       'GameOver': (_, GameJam2023 game) => GameOver(game: game),
+      'Hud': (_, GameJam2023 game) => MobileControls(game: game),
     },
-    initialActiveOverlays: const ['StartMenu'],
+    initialActiveOverlays: const ['Hud'],
   ));
 }
 
@@ -130,9 +131,9 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
       lya.position += velocity * dt;
     }
 
-    if (lya.onDead) {
-      overlays.add('GameOver');
-    }
+    // if (lya.onDead) {
+    //   overlays.add('GameOver');
+    // }
 
     lya.position.x += pushSpeed;
   }
