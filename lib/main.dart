@@ -6,6 +6,7 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:gamejam_baq_2023/actors/instrument.dart';
 import 'package:gamejam_baq_2023/actors/lya.dart';
+import 'package:gamejam_baq_2023/controls/mobile_controls.dart';
 import 'package:gamejam_baq_2023/menus/gameOver.dart';
 import 'package:gamejam_baq_2023/menus/start.dart';
 import 'package:gamejam_baq_2023/world/obstacle.dart';
@@ -18,20 +19,18 @@ void main() {
   Flame.device.fullScreen();
   Flame.device.setLandscape();
 
-  runApp(
-    GameWidget.controlled(
-      gameFactory: GameJam2023.new,
-      overlayBuilderMap: {
-          'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
-          'GameOver': (_, GameJam2023 game) => GameOver(game: game),
-        },  
-        initialActiveOverlays: const ['StartMenu'],
-      )
-    );
-  }
+  runApp(GameWidget.controlled(
+    gameFactory: GameJam2023.new,
+    overlayBuilderMap: {
+      'StartMenu': (_, GameJam2023 game) => StartMenu(game: game),
+      'GameOver': (_, GameJam2023 game) => GameOver(game: game),
+      'MobileControls': (_, GameJam2023 game) => MobileControls(game: game),
+    },
+    initialActiveOverlays: const ['StartMenu', 'MobileControls'],
+  ));
+}
 
-  class GameJam2023 extends FlameGame with HasCollisionDetection {
-
+class GameJam2023 extends FlameGame with HasCollisionDetection {
   Lya lya = Lya();
   double gravity = 100;
   double pushSpeed = 0;
@@ -92,25 +91,28 @@ void main() {
 
     final stages = levelMap.tileMap.getLayer<ObjectGroup>('stages');
     for (final stage in stages!.objects) {
-      add(Stage(size: Vector2(stage.width, stage.height), position: Vector2(stage.x, stage.y)));
+      add(Stage(
+          size: Vector2(stage.width, stage.height),
+          position: Vector2(stage.x, stage.y)));
     }
 
     final goal = levelMap.tileMap.getLayer<ObjectGroup>('goal')!.objects.first;
     add(Goal(size: Vector2(goal.width, goal.height), position: Vector2(goal.x, goal.y)));
 
-    standAnimation = SpriteAnimation.spriteList([
-      await loadSprite('lya_stand.png')
-    ], stepTime: 0.2);
-    runAnimation = SpriteAnimation.spriteList(await fromJSONAtlas('lya_run.png', 'lya_run.json'), stepTime: 0.2);
-    slideAnimation = SpriteAnimation.spriteList([
-      await loadSprite('lya_slide.png')
-    ], stepTime: 0.2);
-    jumpAnimation = SpriteAnimation.spriteList([
-      await loadSprite('lya_jump.png')
-    ], stepTime: 0.2);
-    hitAnimation = SpriteAnimation.spriteList([
-      await loadSprite('lya_hit.png')
-    ], stepTime: 0.2);
+    standAnimation = SpriteAnimation.spriteList(
+        [await loadSprite('lya_stand.png')],
+        stepTime: 0.2);
+    runAnimation = SpriteAnimation.spriteList(
+        await fromJSONAtlas('lya_run.png', 'lya_run.json'),
+        stepTime: 0.2);
+    slideAnimation = SpriteAnimation.spriteList(
+        [await loadSprite('lya_slide.png')],
+        stepTime: 0.2);
+    jumpAnimation = SpriteAnimation.spriteList(
+        [await loadSprite('lya_jump.png')],
+        stepTime: 0.2);
+    hitAnimation = SpriteAnimation.spriteList([await loadSprite('lya_hit.png')],
+        stepTime: 0.2);
 
     initializeGame(true);
   }
@@ -156,10 +158,10 @@ void main() {
 
     if (!lya.onGround) {
       velocity.y += gravity;
-      lya.position.y += velocity.y * dt;
+      lya.position += velocity * dt;
     }
 
-    if(lya.onDead) {
+    if (lya.onDead) {
       overlays.add('GameOver');
     }
 

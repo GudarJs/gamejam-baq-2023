@@ -2,7 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 
-class Instrument extends SpriteComponent with CollisionCallbacks  {
+class Instrument extends SpriteComponent with CollisionCallbacks {
   Instrument({
     required this.tiledObject,
   }) : super() {
@@ -14,8 +14,7 @@ class Instrument extends SpriteComponent with CollisionCallbacks  {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    
+
     add(RectangleHitbox());
   }
-
 }
