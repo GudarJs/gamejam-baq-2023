@@ -219,7 +219,7 @@ class GameJam2023 extends FlameGame with HasCollisionDetection {
 
     lya.position.x += pushSpeed;
     if (lya.onGoalReached) {
-      overlays.add('StartMenu');
+      overlays.add('Victory');
     }
   }
 }
