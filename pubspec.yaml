@@ -38,6 +38,7 @@ dependencies:
   flame: ^1.8.1
   flame_tiled: ^1.12.0
   flame_texturepacker: ^2.1.0
+  flame_audio: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
     - assets/images/
     - assets/images/instruments/
     - assets/tiles/
+    - assets/audio/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

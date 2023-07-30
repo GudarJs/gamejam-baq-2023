@@ -10,7 +10,7 @@ class MobileControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         // color: Colors.red,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -22,64 +22,69 @@ class MobileControls extends StatelessWidget {
                   InstrumentSlot(
                     instrument: Image.asset('assets/images/arpa.png'),
                   ),
+                  const SizedBox(width: 8),
                   InstrumentSlot(
                     instrument: Image.asset('assets/images/bateria.png'),
                   ),
+                  const SizedBox(width: 8),
                   InstrumentSlot(
                     instrument: Image.asset('assets/images/flauta.png'),
                   ),
+                  const SizedBox(width: 8),
                   InstrumentSlot(
                     instrument: Image.asset('assets/images/gaita.png'),
                   ),
+                  const SizedBox(width: 8),
                   InstrumentSlot(
                     instrument: Image.asset('assets/images/sintetizador.png'),
                   ),
                   Expanded(child: Container()),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.white24.withOpacity(0.8),
-                        border: Border.all(width: 2),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.pause),
-                  )
+                  // Container(
+                  //   width: 50,
+                  //   height: 50,
+                  //   decoration: BoxDecoration(
+                  //       color: Colors.white24.withOpacity(0.8),
+                  //       border: Border.all(width: 2),
+                  //       borderRadius: BorderRadius.circular(10)),
+                  //   child: const Icon(
+                  //     Icons.pause,
+                  //   ),
+                  // ),
+                  _PauseButton(
+                    icon: Icons.pause_rounded,
+                    onPressed: () {},
+                  ),
                 ],
               ),
             ),
-            const Expanded(
+            Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _ArrowButton(
-                    icon: Icons.keyboard_arrow_down_rounded,
+                    icon: Icons.keyboard_arrow_up_rounded,
+                    onPressed: () {
+                      if (game.lya.onGround) {
+                        game.lya.onGround = false;
+                        game.velocity.y -= 100;
+                        game.lya.position.y -= 100;
+                      }
+                    },
                   ),
                   _ArrowButton(
-                    icon: Icons.keyboard_arrow_up_rounded,
+                    icon: Icons.keyboard_arrow_down_rounded,
+                    onPressed: () {
+                      if (game.lya.onGround) {
+                        game.lya.onGround = false;
+                        game.velocity.y -= 100;
+                        game.lya.position.y -= 100;
+                      }
+                    },
                   ),
-
-                  // ActionButton(
-                  //   arrowImage: Image.asset('assets/images/arrow-up.png'),
-                  //   onTap: () {
-                  //     if (game.lya.onGround) {
-                  //       game.lya.onGround = false;
-                  //       game.velocity.y -= 100;
-                  //       game.lya.position.y -= 100;
-                  //     }
-                  //   },
-                  // ),
-                  // ActionButton(
-                  //   arrowImage: Image.asset('assets/images/arrow-down.png'),
-                  //   onTap: () {
-                  //     game.velocity.x += 50;
-                  //     game.update(1);
-                  //     //  game.velocity.y += game.gravity;
-                  //   },
-                  // ),
                 ],
               ),
             ),
-            Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
           ],
         ),
       ),
@@ -90,54 +95,65 @@ class MobileControls extends StatelessWidget {
 class _ArrowButton extends StatelessWidget {
   const _ArrowButton({
     required this.icon,
+    required this.onPressed,
     super.key,
   });
 
   final IconData icon;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.grey.shade400.withOpacity(0.5),
+        backgroundColor: Colors.grey.shade400.withOpacity(0.4),
         shape: const CircleBorder(),
         padding: const EdgeInsets.only(top: 4),
-        side: const BorderSide(
-          width: 2.0,
-          color: Colors.black,
-        ),
+        // side: const BorderSide(
+        //     // width: 2.0,
+        //     // color: Colors.black,
+        //     ),
       ),
       child: Icon(
         icon,
-        size: 72,
-        color: Colors.black45,
+        size: 64,
+        color: Colors.black38,
       ),
     );
   }
 }
 
-class ActionButton extends StatelessWidget {
-  final Image arrowImage;
-  final Function()? onTap;
-  const ActionButton({
+class _PauseButton extends StatelessWidget {
+  const _PauseButton({
+    required this.icon,
+    required this.onPressed,
     super.key,
-    required this.onTap,
-    required this.arrowImage,
   });
+
+  final IconData icon;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          // color: Colors.blue,
+    return Material(
+      borderRadius: BorderRadius.circular(8),
+      color: Colors.grey.shade400.withOpacity(0.4),
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade600.withOpacity(0.4),
+            // border: Border.all(width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(
+            Icons.pause,
+            color: Colors.black38,
+          ),
         ),
-        width: 120,
-        height: 120,
-        child: GestureDetector(onTap: onTap, child: arrowImage),
       ),
     );
   }
